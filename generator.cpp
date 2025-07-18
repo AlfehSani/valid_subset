@@ -31,6 +31,7 @@ public:
     }
 };
 
+const int mod = 998244353;
 // Dummy brute force solution - replace with actual brute force logic
 string solve_brute_force(const string &input_str)
 {
@@ -46,38 +47,93 @@ string solve_brute_force(const string &input_str)
     {
         cin >> a[i];
     }
-    long long ans = 0;
-    for (int i = 0; i < n; i++)
+    int q; cin >> q;
+    while (q--)
     {
-        int xr = 0;
-        int an = a[i];
-        for (int j = i; j < n; j++)
+        int l, r, x;
+        cin >> l >> r >> x;
+        l--;
+        r--;
+        int count_multiple = 0;
+        for (int i = l; i <= r; i++)
         {
-            xr ^= a[j];
-            an &= a[j];
-            if (xr == an)
+            if (a[i] % x == 0)
             {
-                ans++;
+                count_multiple++;
             }
         }
+        int others = r - l + 1 - count_multiple;
+        long long power_two = 1;
+        while (others > 0)
+        {
+            power_two *= 2;
+            power_two %= mod;
+            others--;
+        }
+        long long ans = power_two * count_multiple;
+        ans %= mod;
+        ans += mod - 1; // To handle the case subset is empty
+        ans %= mod;
+        cout << ans << '\n';
     }
-    cout << ans << "\n";
     return redirector.get_output();
 }
 
-const int N = 2e5 + 5;
-int arr[N], pre_xor[N];
-vector<int> pre_xor_ind[1 << 20];
-int count_xor_count_range(int l, int r, int x, int curi)
+const int N = 1e5 + 5; 
+int spf[N];
+
+void sieve()
 {
-    // This function counts the number of j such that xor value from j to curi is equal to x
-    int ans = 0;
-    int xr = pre_xor[curi] ^ x;
-    auto it = lower_bound(pre_xor_ind[xr].begin(), pre_xor_ind[xr].end(), l - 1);
-    auto it2 = lower_bound(pre_xor_ind[xr].begin(), pre_xor_ind[xr].end(), r);
-    ans = it2 - it;
-    return ans;
+    for (int i = 2; i < N; i++)
+    {
+        if (spf[i] == 0)
+        {
+            for (int j = i; j < N; j += i)
+            {
+                if (spf[j] == 0)
+                {
+                    spf[j] = i;
+                }
+            }
+        }
+    }
 }
+
+vector<int> get_divisors(int x)
+{
+    vector<int> divisors;
+    vector<pair<int, int>> prime_factors;
+    while (x > 1)
+    {
+        int prime_factor = spf[x];
+        int count = 0;
+        while (x % prime_factor == 0)
+        {
+            x /= prime_factor;
+            count++;    
+        }
+        prime_factors.push_back({prime_factor, count});
+    }
+    divisors.push_back(1); // 1 is a divisor of every number
+    for(auto &[p, c] : prime_factors)
+    {
+        vector<int> current_divisors = divisors;
+        for(int d:divisors)
+        {
+            int cur_num = d;
+            for(int i = 1; i <= c; i++)
+            {
+                cur_num *= p;
+                current_divisors.push_back(cur_num);
+            }
+        }
+        divisors = current_divisors;
+    }
+
+    return divisors;
+}
+
+vector<int>multiple_of[N];
 
 // Dummy optimal solution - replace with actual optimal logic
 string solve_optimal(const string &input_str)
@@ -87,51 +143,57 @@ string solve_optimal(const string &input_str)
 
     // This is where you put the actual optimal implementation
     // It can use cin/cout as normal
+    
+   
+
+    //  cout << "hello\n";
+    // return redirector.get_output();
     int n;
     cin >> n;
+    vector<int> a(n);
+    vector<int> power2(n + 1, 1);
     for (int i = 1; i <= n; i++)
     {
-        cin >> arr[i];
-        pre_xor[i] = pre_xor[i - 1] ^ arr[i];
+        power2[i] = (1LL * power2[i - 1] * 2) % mod;
     }
+    // cerr<< "Hello" << endl;
 
-    for (int i = 0; i <= n; i++)
+    //  cout << "hello\n";
+    // return redirector.get_output();
+
+    for (int i = 0; i < n; i++)
     {
-        pre_xor_ind[pre_xor[i]].push_back(i);
-    }
-
-    vector<pair<int, int>> and_count;
-    long long ans = 0;
-    for (int i = 1; i <= n; i++)
-    {
-        vector<pair<int, int>> cur_and_count;
-        cur_and_count.push_back({arr[i], i});
-        for (auto [ans_val, ind] : and_count)
+        cin >> a[i];
+        if(a[i] <= 0 || a[i] >= N) cerr << a[i] << endl;
+        // assert(a[i] >= 1 && a[i] < N);
+        auto divisors = get_divisors(a[i]);
+        for (int d : divisors)
         {
-            ans_val &= arr[i];
-            if (ans_val != cur_and_count.back().first)
-            {
-                cur_and_count.push_back({ans_val, ind});
-            }
-        }
-        and_count = cur_and_count;
-        int n1 = and_count.size();
-
-        for (int j = 0; j < n1; j++)
-        {
-            int l = 1;
-            if (j + 1 < n1)
-                l = and_count[j + 1].second + 1;
-            ans += count_xor_count_range(l, and_count[j].second, and_count[j].first, i);
+            assert(d < N);
+            multiple_of[d].push_back(i + 1); // Store 1-based index
         }
     }
-
-    for (int i = 0; i <= n; i++)
+    // cerr << "hello1" << endl;
+    // return redirector.get_output();
+    int q; cin >> q;
+    while (q--)
     {
-        pre_xor_ind[pre_xor[i]].clear();
+        int l, r, x;
+        cin >> l >> r >> x;
+        auto itr = upper_bound(multiple_of[x].begin(), multiple_of[x].end(), r);
+        auto itr1 = lower_bound(multiple_of[x].begin(), multiple_of[x].end(), l);
+        int count_multiple = itr - itr1;
+        int others = r - l + 1 - count_multiple;
+        long long power_two = power2[others];
+        long long ans = power_two * count_multiple;
+        ans %= mod;
+        ans += mod - 1; // To handle the case subset is empty
+        ans %= mod;
+        cout << ans << '\n';
     }
 
-    cout << ans << '\n';
+    for(int i = 0; i < N; i++) 
+        multiple_of[i].clear();
 
     return redirector.get_output();
 }
@@ -175,8 +237,8 @@ void run_solution(const string &input_file, const string &output_file, bool use_
     else
     {
         // Try brute force with timeout
-        auto future = async(launch::async, solve_brute_force, input_str);
-        auto status = future.wait_for(seconds(20));
+        auto future = async(launch::async, solve_optimal, input_str);
+        auto status = future.wait_for(seconds(1));
 
         if (status == future_status::timeout)
         {
@@ -206,11 +268,11 @@ void generate_test_case(int test_num, int file_num)
     // Generate random test data
     int N_high = 1e5;
     int V_high = 1e5;
-    int n = rng() % N_high + 1;
+    int n = (rng() % N_high) + 1;
     vector<int> a(n);
     for (int i = 0; i < n; ++i)
     {
-        a[i] = rng() % (V_high + 1);
+        a[i] = (rng() % V_high) + 1;
     }
 
     fin << n << '\n';
@@ -225,7 +287,7 @@ void generate_test_case(int test_num, int file_num)
         int l = rng() % n + 1;
         int r = rng() % n + 1;
         if (l > r) swap(l, r);
-        int x = rng() % (V_high + 1); // Random value for the query
+        int x = rng() % V_high + 1; // Random value for the query
         fin << l << " " << r << " " << x << '\n';
     }
     fin.close();
@@ -238,12 +300,12 @@ void generate_test_case(int test_num, int file_num)
 int main(int argc, char *argv[])
 {
     srand(time(0)); // Initialize random seed
-
+     sieve(); // Precompute smallest prime factors
     // Create test_cases directory if it doesn't exist
-    system("mkdir -p test_cases");
+    // system("mkdir -p test_cases");
 
     int start_file_num = find_next_file_number();
-    int num_tests = 20;
+    int num_tests = 5;
 
     cout << "Generating " << num_tests << " test cases starting from file number " << start_file_num << endl;
     cout << "--------------------------------------------------------------------------------" << endl;

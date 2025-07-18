@@ -1,0 +1,17 @@
+{
+    "title": "Valid Subset",
+    "original": "",
+    "difficulty": "Medium",
+    "tags": [
+        "Binary_search",
+        "Number Theory"
+    ],
+    "time": 1,
+    "space": 256,
+    "problem_statement": "problem_statement.md",
+    "standard_program": [
+        "standard.cpp"
+    ],
+    "explanation": "solution.md",
+    "test_case_generator": "test_generator.cpp"
+}
