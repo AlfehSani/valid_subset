@@ -9,9 +9,9 @@ Our approach, already trusted by leading AI research teams, enables robust bench
 
 ## Directory Structure
 
-- `./checker.cpp` - 
+- `./checker.cpp` - .
 - `./validator.cpp` - problem-specific input validator
-` `./run_all.sh` - 
+- `./run_all.sh` - .
 - `./requirements.json` - metadata for the task
 - `./test_cases/` - contains sets of input and expected outputs to test the solutions again
 - `./Correct/` - a set of solutions that pass the test case
