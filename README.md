@@ -1,1 +1,84 @@
-# valid_subset
+# Competititve Coding Example Testcase
+
+## Introduction
+
+This repository provides a comprehensive, real-world example of a competitive programming problem suite, designed for organizations seeking to train and evaluate AI models on advanced algorithmic tasks. It includes problem statements, validators, checkers, a diverse set of correct and incorrect solutions, and a rich collection of test cases—mirroring the rigorous standards used in major programming competitions.
+
+Our approach, already trusted by leading AI research teams, enables robust benchmarking and fine-tuning of models for code generation, problem-solving, and test case reasoning. The structure and assets in this repo are crafted to facilitate automated evaluation pipelines, large-scale model training, and in-depth analysis of model performance on challenging, domain-specific tasks.
+
+
+## Directory Structure
+
+- `./checker.cpp` - 
+- `./validator.cpp` - problem-specific input validator
+` `./run_all.sh` - 
+- `./requirements.json` - metadata for the task
+- `./test_cases/` - contains sets of input and expected outputs to test the solutions again
+- `./Correct/` - a set of solutions that pass the test case
+ - `./InCorrect/` a set of incorrect solutions
+
+
+## Problem Statement for "Valid Subsets"
+You are given an array $a$ of $n$ integers (1-indexed). You need to process $q$ independent queries.
+In each query, you are given three integers $l$, $r$, and $x$, and your task is to count the number of **non-empty subsets** of the subarray $a[l..r]$ such that **for every pair of elements** in the chosen subset, the greatest common divisor (GCD) of the pair is **not divisible by $x$**.
+
+Since the answer can be very large, **output it modulo** $998244353$.
+
+## Constraints
+- $1 \leq n, q \leq 10^5$  
+- $1 \leq a_i, x \leq 10^5$  
+- $1 \leq l \leq r \leq n$  
+
+- Time limit per test: 2 seconds  
+- Memory limit per test: 512 megabytes
+
+## Input
+
+- The first line contains an integer $n$ — the size of the array.  
+- The second line contains $n$ integers $a_1, a_2, \ldots, a_n$ — the elements of the array.  
+- The third line contains an integer $q$ — the number of queries.  
+- The next $q$ lines each contain three integers $l$, $r$, and $x$ — describing a query.
+
+## Output
+
+For each query, output a single integer — the number of valid non-empty subsets of the subarray $a[l..r]$ such that no pair of elements has GCD divisible by $x$. Output each result modulo $998244353$.
+
+## Notes
+
+- A subset can contain any number of elements from $a[l..r]$, as long as it is non-empty.
+- A subset is valid if **for every pair** $(a_i, a_j)$ in the subset, $\gcd(a_i, a_j)$ is **not divisible** by $x$.
+- Single-element subsets are always valid.
+
+## Sample Input
+
+5  
+2 3 4 5 6  
+3  
+1 3 2  
+2 5 3  
+1 5 5  
+
+## Sample Output
+
+3  
+7  
+15  
+
+## Explanation
+
+Consider the queries one by one:
+
+1. Query $(l=1, r=3, x=2)$ — subarray is $[2, 3, 4]$  
+   Valid subsets (non-empty) where no pair's GCD is divisible by $2$ are:  
+   - $\{2\}$  
+   - $\{3\}$  
+   - $\{4\}$  
+   The subsets with more than one element, such as $\{2,4\}$, are invalid because $\gcd(2,4) = 2$ is divisible by $2$.  
+   Hence total valid subsets: $3$.
+
+2. Query $(l=2, r=5, x=3)$ — subarray $[3, 4, 5, 6]$  
+   The total valid subsets count is $7$.
+
+3. Query $(l=1, r=5, x=5)$ — subarray $[2, 3, 4, 5, 6]$  
+   The total valid subsets count is $15$.
+
