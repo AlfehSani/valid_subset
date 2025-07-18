@@ -70,7 +70,7 @@ string solve_brute_force(const string &input_str)
             power_two %= mod;
             others--;
         }
-        long long ans = power_two * count_multiple;
+        long long ans = power_two * (count_multiple + 1);
         ans %= mod;
         ans += mod - 1; // To handle the case subset is empty
         ans %= mod;
@@ -185,7 +185,7 @@ string solve_optimal(const string &input_str)
         int count_multiple = itr - itr1;
         int others = r - l + 1 - count_multiple;
         long long power_two = power2[others];
-        long long ans = power_two * count_multiple;
+        long long ans = power_two * (count_multiple + 1);
         ans %= mod;
         ans += mod - 1; // To handle the case subset is empty
         ans %= mod;
@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
     // system("mkdir -p test_cases");
 
     int start_file_num = find_next_file_number();
-    int num_tests = 5;
+    int num_tests = 25;
 
     cout << "Generating " << num_tests << " test cases starting from file number " << start_file_num << endl;
     cout << "--------------------------------------------------------------------------------" << endl;

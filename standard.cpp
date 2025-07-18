@@ -87,7 +87,7 @@ int main() {
         int count_multiple = itr - lower_bound(multiple_of[x].begin(), multiple_of[x].end(), l);
         int others = r - l + 1 - count_multiple;
         long long power_two = power2[others];
-        long long ans = power_two * count_multiple;
+        long long ans = power_two * (count_multiple + 1);
         ans %= mod;
         ans += mod - 1; // To handle the case subset is empty
         ans %= mod;
